@@ -96,11 +96,11 @@ bool miller(ll n) {
 
 ll pollardRho(ll n) {
     mt19937 rnd(chrono::steady_clock::now().time_since_epoch().count());
-    ll x = 0, y = 0, c = 1;
+    ll x = rnd() % n, y = x, c = rnd() % n;
     ll step = 30, prd = 2, q;
 
     auto f = [&](ll a)->ll {
-        return mul_mod(a, a, n) + c;
+        return add_mod(mul_mod(a, a, n), c, n);
     };
 
     while (step++ % 40 || __gcd(prd, n) == 1) {

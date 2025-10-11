@@ -68,7 +68,24 @@ void solve() {
 
 // Harmonic Series......
 
-/*void solve() {
+/*
+const int mxN = 1e6 + 1;
+vector<int> spf(mxN);
+
+void solve() {
+    // Smallest Prime factor of a number,,
+    iota(all(spf), 0);
+
+    for (int i = 2; i * i < mxN; ++i) {
+        if (spf[i] == i) {
+            for (int j = i * i; j < mxN; j += i) {
+                if (spf[j] == j) {
+                    spf[j] = i;
+                }
+            }
+        }
+    }
+
     primes.push_back(2);
     for (int i = 3; i * i <= mxN; i += 2) {
         if (isPrime[i]) {
@@ -78,13 +95,14 @@ void solve() {
             }
         }
     }
-    for(int i = 3; i < mxN; i += 2){
-        if(isPrime[i]) primes.push_back(i);
+    for (int i = 3; i < mxN; i += 2) {
+        if (isPrime[i]) primes.push_back(i);
     }
     for (int i = 0; i < primes.size(); i += 100) {
         cout << primes[i] << '\n';
     }
 }*/
+
 int main() {
     ios_base::sync_with_stdio(0); cin.tie(0);
     int t = 1;
