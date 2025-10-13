@@ -49,8 +49,7 @@ struct Point {
     }
     // Check P1 is inside between a and b or not...
     bool isInside (const Point &a, const Point &b) const {
-        ll x0 = this->x, y0 = this->y;
-        return (a.x <= x0 && x0 <= b.x && a.y <= y0 && y0 <= b.y);
+        return (a.x <= x && x <= b.x && a.y <= y && y <= b.y);
     }
     // friend istream& operator>>(istream &is, Point &p) {
     //     return is >> p.x >> p.y;
