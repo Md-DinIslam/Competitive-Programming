@@ -57,8 +57,9 @@ void solve() {
 
     // DFS 01 in Main Graph (g)...
     for (int i = 1; i <= n; ++i) {
-        if (!vis[i])
+        if (!vis[i]) {
             dfs(i);
+        }
     }
     reverse(begin(ord), end(ord));
     // debug(ord);
@@ -68,8 +69,9 @@ void solve() {
     int comp = 1;
     
     for (auto &x : ord) {
-        if (!vis[x])
+        if (!vis[x]) {
             dfs2(x, comp++);
+        }
     }
 
     for (int i = 1; i <= n; ++i)
