@@ -1,7 +1,7 @@
 /*
     author: Din_ED
-    Time: 19:21:55
-    Date: 15-10-2025
+    Time: 17:17:54
+    Date: 20-10-2025
 */
 
 #include <bits/stdc++.h>
@@ -18,45 +18,35 @@ using namespace std;
 #define pb push_back
 #define sz(x) int(x.size())
 #define arr array
-#define vll vector<vector<ll>>
 
-const int mod = 1e9 + 7;
-const ll inf = 1e18;
-
-vector<int> v;
-vll dp;
-int n;
+vector<ll> p;
+vector<vector<ll>> dp;
 
 ll getAns(int i, int j) {
-    if (i == j) return v[i];
-    if (i > n || j <= 0 || i > j) return 0ll;
-
+    if (i == j) return 0ll;
     ll &ans = dp[i][j];
-    if (ans != -inf) return ans;
-
-    ans = max(ans, v[i] - getAns(i + 1, j));
-    ans = max(ans, v[j] - getAns(i, j - 1));
-
+    if (ans != -1) return ans;
+    ans = 1e18;
+    for (int k = i; k < j; ++k) {
+        ans = min(ans, getAns(i, k) + getAns(k + 1, j) + (p[j] - p[i - 1]));
+    }
     return ans;
 }
 
 void Din() {
-    // int n;
+    int n;
     cin >> n;
 
-    v.assign(n + 1, 0);
+    vector<int> v(n + 1);
+    p.assign(n + 1, 0);
+    dp.assign(n + 1, vector<ll> (n + 1, -1));
+
     for (int i = 1; i <= n; ++i) {
         cin >> v[i];
+        p[i] = p[i - 1] + v[i];
     }
 
-    dp.assign(n + 1, vector<ll> (n + 1, -inf));
-
-    ll taru = getAns(1, n); // maximum difference...
-    ll ans = accumulate(all(v), 0ll) + taru;
-    
-    // dg(ans / 2);
-    // cout << taru << '\n';
-    cout << ans / 2 << '\n';
+    cout << getAns(1, n) << '\n';
 }
 
 int main() {
