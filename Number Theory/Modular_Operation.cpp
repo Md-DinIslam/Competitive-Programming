@@ -17,124 +17,57 @@ using namespace std;
 #define sz(x) int(x.size())
 #define arr array
 
-template <ll Mod>
-class modOpt {
-    ll val;
-public:
-    modOpt (ll _val = 0) : val (_val % Mod) {}
-    // modOpt (ll _val = 0) { // both are same...
-    //     val = _val % Mod;
-    // }
-
-    operator ll() const {
-        return val;
-    }
-
-    // (a ^ b) using binary exponential...
-    modOpt binExp (ll b) const {
-        modOpt ans = 1;
-        modOpt a = val; // the base...
-
-        while (b) {
-            if (b & 1ll)
-                ans = (ans * a);
-            a *= a;
-            b >>= 1;
-        }
-
-        return ans;
+template<ll MOD>
+struct Mint {
+    ll a;
+    Mint(ll _a = 0) : a((_a % MOD + MOD) % MOD) {}
+    
+    Mint binExp(ll b) const {
+        Mint res = 1, a = a;
+        for (; b; b >>= 1, a *= a) if (b & 1) res *= a;
+        return res;
     }
     
-    // if x = 5, it return (1/5)....
-    modOpt inverse() const {
-        static_assert(Mod >= 2);
-        assert(val != 0);
-        return binExp(Mod - 2);
+    Mint inv() const { return binExp(MOD - 2); }
+    
+    Mint operator-() const { return Mint(-a); }
+    Mint operator+(Mint o) const { return a + o.a; }
+    Mint operator-(Mint o) const { return a - o.a + MOD; }
+    Mint operator*(Mint o) const { return a * o.a; }
+    Mint operator/(Mint o) const { return a * o.inv().a; }
+    
+    Mint& operator+=(Mint o) { return *this = *this + o; }
+    Mint& operator-=(Mint o) { return *this = *this - o; }
+    Mint& operator*=(Mint o) { return *this = *this * o; }
+    Mint& operator/=(Mint o) { return *this = *this / o; }
+    
+    bool operator==(Mint o) const { return a == o.a; }
+    bool operator!=(Mint o) const { return a != o.a; }
+    
+    friend ostream& operator<<(ostream& os, Mint m) { 
+        return os << m.a; 
     }
-
-    // Operator but not assigning value in the result yet....
-    modOpt operator+(const modOpt &other) {
-        return (val + other.val) % Mod;
-    }
-
-    modOpt operator-(const modOpt &other) {
-        return (val - other.val + Mod) % Mod;
-    }
-
-    modOpt operator*(const modOpt &other) {
-        return (val * other.val) % Mod;
-    }
-
-    modOpt operator/(const modOpt &other) {
-        // return (*this) * other.inverse();
-        return val * other.inverse();
-    }
-
-    // Operator with assigning....
-    modOpt operator+=(const modOpt &other) {
-        return *this = *this + other;
-    }
-
-    modOpt operator-=(const modOpt &other) {
-        return *this = *this - other;
-    }
-
-    modOpt operator*=(const modOpt &other) {
-        return *this = *this * other;
-    }
-
-    modOpt operator/=(const modOpt &other) {
-        return *this = *this / other;
-    }
-
-    bool operator==(const modOpt &other) {
-        return val == other.val;
-    }
-
-    // long long with mod value operation....
-    friend modOpt operator+(ll a, const modOpt &b) {
-        return modOpt(a) + b;
-    }
-
-    friend modOpt operator-(ll a, const modOpt &b) {
-        return modOpt(a) - b;
-    }
-
-    friend modOpt operator*(ll a, const modOpt &b) {
-        return modOpt(a) * b;
-    }
-
-    friend modOpt operator/(ll a, const modOpt &b) {
-        return modOpt(a) / b;
-    }
-
-    friend modOpt operator==(ll a, const modOpt &b) {
-        return modOpt(a) == b;
-    }
-
-    // Input/Output operator...
-    friend istream& operator>>(istream& input, modOpt& number) {
-        return input >> number.val; // like cin >> a...
-    }
-
-    friend ostream& operator<<(ostream& output, modOpt& number) {
-        return output << number.val; // like cin >> a...
+    friend istream& operator>>(istream& is, Mint& m) { 
+        ll x; is >> x; m = Mint(x); return is; 
     }
 };
 
-const int mod = 7; // can any prime like 1e9 + 9....
+const int mod = 11; // can any prime like 1e9 + 9....
 
-using mint = modOpt <mod>;
+using mint = Mint <mod>;
 
 void Din() {
-    int a, b;
-    cin >> a >> b; // 10, 3.. can be any number...
+    int a = 10, b = 3;
+    // cin >> a >> b;
 
-    mint x = a, y = b; // x = mint(a), y = mint(b)....
+    // mint x = a, y = b; // x = mint(a), y = mint(b)....
+    mint x, y;
+    cin >> x >> y;
+    
     cout << x << " " << y << "\n"; // inital value of x % mod....
-    cout << x.binExp(y) << '\n'; // like (a ^ b)....
-    cout << x.inverse() << '\n'; // like (1/x)...
-    cout << x.inverse() * y << '\n'; // like (1/x * y)....
+    cout << x.binExp(y.a) << '\n'; // like (a ^ b)....
+    cout << x.inv() << '\n'; // like (1/x)...
+    cout << x.inv() * y << '\n'; // like (1/x * y)....
     cout << x * y << "\n";
     cout << x / y << '\n';
     cout << ((x == y) ? "Equal" : "Not Equal") << '\n';
