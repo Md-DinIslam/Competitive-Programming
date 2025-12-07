@@ -36,6 +36,9 @@ struct Point {
     ll operator *(const Point &p) const {
         return x * p.y - y * p.x;
     }
+    double norm() const {
+        return sqrt(x*x + y*y);
+    }
     ll crossProduct(const Point &b, const Point &c) const {
         return (b - *this) * (c - *this);
     }
