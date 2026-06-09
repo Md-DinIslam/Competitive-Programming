@@ -76,7 +76,7 @@ bool dfs(int node) {
     return 0;
 }
 
-int HopCronft() {
+int HopCroft() {
     int ans = 0;
 
     while (bfs()) {
@@ -104,7 +104,7 @@ void Din() {
         g[x].push_back(y);
     }
 
-    int max_match = HopCronft();
+    int max_match = HopCroft();
     cout << max_match << "\n";
 }
 

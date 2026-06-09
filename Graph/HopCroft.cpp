@@ -76,7 +76,7 @@ bool dfs(int node) {
     return 0;
 }
 
-int HopCronft() {
+int HopCroft() {
     int ans = 0;
 
     while (bfs()) {
@@ -109,7 +109,7 @@ void Din() {
     //     } cerr << "\n";
     // }
 
-    int max_match = HopCronft();
+    int max_match = HopCroft();
     ll ans = 1ll * (2 * n - max_match) * 1013;
 
     cout << ans << "\n";
