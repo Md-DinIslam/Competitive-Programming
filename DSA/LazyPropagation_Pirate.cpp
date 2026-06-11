@@ -53,7 +53,6 @@ public:
         }
         else if (tp == 3) {
             sg[i] = (e - s + 1) - sg[i];
-
         }
 
         // Fliping in type = 'I'...
