@@ -23,8 +23,8 @@ struct Mint {
     Mint(ll _a = 0) : a((_a % MOD + MOD) % MOD) {}
     
     Mint binExp(ll b) const {
-        Mint res = 1, a = a;
-        for (; b; b >>= 1, a *= a) if (b & 1) res *= a;
+        Mint res = 1, z = a;
+        for (; b; b >>= 1, z *= z) if (b & 1) res *= z;
         return res;
     }
     
