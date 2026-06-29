@@ -24,7 +24,8 @@ template<class T,class...R>
 void __db(const char* n, T v, R...r){
     while(*n==' ')n++;
     const char* c=strchr(n,',');
-    cerr<<string(n,c?c-n:strlen(n))<<" = "; __p(v); cerr<<" ";
+    cerr<<string(n,c?c-n:strlen(n))<<" = "; __p(v); cerr<<" | ";
     __db(c?c+1:"",r...);
 }
-#define dg(...) cerr<<"L"<<__LINE__<<": ",__db(#__VA_ARGS__,__VA_ARGS__)
+#define dg(...) cerr << "[" << __LINE__ << "] ",__db(#__VA_ARGS__,__VA_ARGS__)
+
