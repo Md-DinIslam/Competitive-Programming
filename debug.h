@@ -6,6 +6,13 @@
 // a single-file ICPC setup with #include <bits/stdc++.h> + using namespace std;
 // above the #include of this header).
 
+// ============= Include this =============
+// #ifdef LOCAL
+// #include "debug.h"
+// #else
+// #define dg(x...)
+// #endif
+
 template <typename T, typename = void>
 struct is_iterable : false_type {};
 
@@ -102,4 +109,3 @@ void __dbg(const char* names, const T& val, const Rest&... rest) {
 }
 
 #define dg(...) cerr << "[" << __LINE__ << "]", __dbg(#__VA_ARGS__, __VA_ARGS__)
-

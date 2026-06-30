@@ -1,4 +1,9 @@
-// Debug...
+// ============= Include this =============
+// #ifdef LOCAL
+// #include "debug.h"
+// #else
+// #define dg(x...)
+// #endif
 void __p(bool x)          { cerr<<(x?"1":"0"); }
 void __p(char x)          { cerr<<x; }
 void __p(int x)           { cerr<<x; }
