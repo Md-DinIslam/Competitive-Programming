@@ -137,3 +137,10 @@ int main() {
     }
     return 0;
 }
+
+
+/*
+
+https://atcoder.jp/contests/abc429/tasks/abc429_f
+
+*/
