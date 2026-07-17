@@ -110,7 +110,8 @@ void Din() {
     // }
 
     int max_match = HopCroft();
-    ll ans = 1ll * (2 * n - max_match) * 1013;
+    // ll ans = 1ll * (2 * n - max_match) * 1013;
+    ll ans = 1ll * n * 2026 - 1ll * max_match * 1013;
 
     cout << ans << "\n";
 }
