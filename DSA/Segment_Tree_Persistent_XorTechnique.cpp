@@ -60,7 +60,8 @@ public: // Alert 40*n for PST
         sg[cur].sum = sg[sg[cur].lc].sum ^ sg[sg[cur].rc].sum;
         return cur;
     }
-
+    
+    // getting min value index with odd count...
     int qry (int prev, int cur, int s, int e) {
         if ((sg[prev].sum ^ sg[cur].sum) == 0) return 0;
         if (s == e) return s;
