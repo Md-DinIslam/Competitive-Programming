@@ -65,10 +65,10 @@ struct suffixArray {
                 }
             }
 
-            // Kasai's Algorithm
-            for (int i = 0, j = 0; i < n - 1; lcp[rank[i++]] = k) {
-                for (k && k--, j = ans[rank[i] - 1]; i + k < n && j + k < n && s[i + k] == s[j + k]; k++);
-            }
+        }
+        // Kasai's Algorithm
+        for (int i = 0, j = 0; i < n - 1; lcp[rank[i++]] = k) {
+            for (k && k--, j = ans[rank[i] - 1]; i + k < n && j + k < n && s[i + k] == s[j + k]; k++);
         }
     }
     
