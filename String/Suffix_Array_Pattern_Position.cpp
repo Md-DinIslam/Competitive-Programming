@@ -22,6 +22,7 @@ using namespace std;
 template <class T>
 struct RMQ {
     vector<vector<T>> sp;
+    RMQ () {}
     RMQ (vector<T> &v) : sp(1, v) {
         int n = sz(v);
         for (int i = 1, p = 1; p * 2 <= n; p *= 2, ++i) {
@@ -44,7 +45,7 @@ struct suffixArray {
     string s;
     vector<int> ans, lcp;
     int n;
-    RMQ <int> *rmq;
+    RMQ <int> rmq;
     
     suffixArray(string _s, int lim = 256) {
         s = _s;
@@ -96,13 +97,7 @@ struct suffixArray {
         
         // dg(ans, lcp);
         
-        // vector<int> new_temp(n);
-        // for(int i = 1; i < n; ++i) {
-        //     new_temp[i-1] = lcp[i];
-        // }
-        // rmq = new RMQ<int>(new_temp);
-        
-        rmq = new RMQ<int>(ans);
+        rmq = RMQ<int>(ans);
     }
 
     int ok(const string &pat, int m, int pos) {
@@ -153,7 +148,7 @@ struct suffixArray {
         if (L > R) swap(L, R);
         // dg(L, R, pat, ans);
         if (R - L == 0) return -1;
-        return rmq->qry(L, R-1) + 1;
+        return rmq.qry(L, R-1) + 1;
     }
 };
 
