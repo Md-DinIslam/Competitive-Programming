@@ -1,139 +1,124 @@
-/* GREEN UNIVERSITY OF BANGLADESH
-    Md DinIslam, Batch-221 (CSE)
+/*
+    author: Din_ED
+    Time: 17:13:43
+    Date: 20-10-2026
 */
+
 #include <bits/stdc++.h>
 using namespace std;
 
-// Debug..
 #ifdef LOCAL
 #include "debug.h"
 #else
-#define dg(x...)
+#define dbg(x...)
 #endif
 
-#define pb push_back
+#define ll long long
 #define all(x) x.begin(), x.end()
+#define pb push_back
 #define sz(x) int(x.size())
 #define arr array
-#define ll long long
-#define ull uint64_t
 
-struct Hash {
+typedef uint64_t ull;
+
+struct H {
     ull x;
-    Hash(ull x = 0) : x(x) {};
-
-    Hash operator+(Hash op) {
-        return x + op.x + (x + op.x < x);
+    H (ull _x = 0) : x(_x) {}
+    H operator+(H o) const { return x + o.x + (x + o.x < x); }
+    H operator-(H o) const { return *this + ~o.x; }
+    H operator*(H o) const {
+        auto m = (__uint128_t) x * o.x;
+        return H((ull)m) + (ull) (m >> 64);
     }
-
-    Hash operator-(Hash op) {
-        return *this + ~op.x;
-    }
-
-    Hash operator*(Hash op) {
-        auto m = (__uint128_t) x * op.x;
-        return Hash((ull) m) + (ull) (m >> 64);
-    }
-
-    ull get() const {
-        return x + !~x;
-    }
-
-    bool operator==(Hash op) {
-        return get() == op.get();
-    }
-
-    friend ostream& operator<<(ostream& out, Hash &op) {
-        return out << op.x;
-    }
+    ull get() const { return x + !~x; }
+    bool operator==(H o) const {return get() == o.get(); }
+    bool operator<(H o) const {return get() < o.get(); } 
 };
 
-static const Hash prime = (ll) 1e11 + 3;
+const H prime = (ll) 1e11 + 3;
 
-class hashInterval {
-    vector<Hash> pw, hsh, sg;
+struct hashInterval {
+    struct Node {
+        H hsh = 0;
+        int len = 0;
+    };
     int n;
-public:
-    hashInterval(string &s) {
-        this->n = sz(s);
-        hsh.resize(n + 1); pw = hsh;
-        sg.resize(4 * n + 1);
-        // dg(n);
+    vector<H> pw;
+    vector<Node> sg;
+    hashInterval (string &s) {
+        n = sz(s);
+        sg.resize(4*n+1);
+        pw.resize(n+1);
         pw[0] = 1;
         for (int i = 1; i <= n; ++i) {
-            pw[i] = pw[i - 1] * prime;
-            // cout << pw[i] << " ";
+            pw[i] = pw[i-1] * prime;
         }
         for (int i = 1; i <= n; ++i) {
-            upd(i, s[i - 1]);
+            upd(i, s[i-1], 1, n);
         }
     }
 
-    void upd(int indx, char val, int s, int e, int i = 1) {
-        if (s == e) sg[i] = val;
-        else {
-            int mid = (s + e) / 2;
-            if (indx <= mid)
-                upd(indx, val, s, mid, 2 * i);
-            else
-                upd(indx, val, mid + 1, e, 2 * i + 1);
-            sg[i] = sg[2 * i] * pw[e - mid] + sg[2 * i + 1];
+    Node merge (const Node &a, const Node &b) {
+        Node temp;
+        temp.hsh = a.hsh * pw[b.len] + b.hsh;
+        temp.len = a.len + b.len;
+        return temp;
+    }
+
+    void upd (int idx, char val, int s, int e, int i = 1) {
+        if (s == e) {
+            sg[i] = {val, 1};
+            return;
         }
-    }
-
-    void upd(int indx, char val) {
-        upd(indx, val, 1, n);
-    }
-
-    pair<Hash, int> qry(int lb, int rb, int s, int e, int i = 1) {
-        if (s > rb || e < lb) return {0, 0};
-        if (s >= lb && e <= rb) return {sg[i], e - s + 1};
         int mid = (s + e) / 2;
-        auto a = qry(lb, rb, s, mid, 2 * i);
-        auto b = qry(lb, rb, mid + 1, e, 2 * i + 1);
-        int k = b.second;
-        Hash ans = a.first * pw[k] + b.first;
-        int len = a.second + b.second;
-        return {ans, len};
+        if (idx <= mid) {
+            upd (idx, val, s, mid, 2*i);
+        }
+        else {
+            upd (idx, val, mid+1, e, 2*i+1);
+        }
+        sg[i] = merge(sg[2*i], sg[2*i+1]);
     }
 
-    Hash qry(int a, int b) {
-        // Hash test = qry(a, b, 1, n).first;
-        // cout << test << "\n";
-        return qry(a, b, 1, n).first;
+    Node qry (int lb, int rb, int s, int e, int i = 1) {
+        if (s > rb || e < lb) return {0, 0};
+        if (s >= lb && e <= rb) return sg[i];
+        int mid = (s + e) / 2;
+        return merge(qry(lb, rb, s, mid, 2*i), qry(lb, rb, mid+1, e, 2*i+1));
     }
 };
 
 void Din() {
+    int n, q;
+    cin >> n >> q;
     string s;
     cin >> s;
-    int n = sz(s);
 
     hashInterval prefix(s);
     reverse(all(s));
     hashInterval suffix(s);
-
-    int q;
-    cin >> q;
+    
     while (q--) {
-        string tp;
+        int tp;
         cin >> tp;
-        if (tp[0] == 'p') {
-            int lb, rb;
-            cin >> lb >> rb;
-            bool same = prefix.qry(lb, rb) == suffix.qry(n - rb + 1, n - lb + 1);
-
-            if (same)
-                cout << "Yes\n";
-            else
-                cout << "No\n";
+        if (tp == 1) {
+            int idx;
+            char ch;
+            cin >> idx >> ch;
+            prefix.upd(idx, ch, 1, n);
+            suffix.upd(n-idx+1, ch, 1, n);
         }
         else {
-            int indx;
-            char ch;
-            cin >> indx >> ch;
-            prefix.upd(indx, ch);
-            suffix.upd(n - indx + 1, ch);
+            int lb, rb;
+            cin >> lb >> rb;
+            H hsh_prefix = prefix.qry(lb, rb, 1, n).hsh;
+            H hsh_suffix = suffix.qry(n-rb+1, n-lb+1, 1, n).hsh;
+            if (hsh_prefix == hsh_suffix) {
+                cout << "YES\n";
+            }
+            else {
+                cout << "NO\n";
+            }
         }
     }
 }
