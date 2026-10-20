@@ -35,6 +35,7 @@ template<class T> struct RMQ {
     }
 
     T qry(int a, int b) {
+        b += 1;
         int depth = 31 - __builtin_clz(b - a);
         return getGCD(sp[depth][a], sp[depth][b - (1 << depth)]);
     }
@@ -56,11 +57,11 @@ void Din() {
     for (int i = 0; i < n; ++i) {
         int j = i;
         while (j < n) {
-            int gcd = rmq.qry(i, j + 1);
+            int gcd = rmq.qry(i, j);
             int lb = j, rb = n - 1;
             while (lb < rb) {
                 int mid = lb + (rb - lb) / 2;
-                ll curr_gcd = rmq.qry(i, mid + 1);
+                ll curr_gcd = rmq.qry(i, mid);
                 if (curr_gcd < gcd) {
                     rb = mid;
                 }
@@ -69,7 +70,7 @@ void Din() {
                 }
             }
 
-            if (rmq.qry(i, lb + 1) != gcd) {
+            if (rmq.qry(i, lb) != gcd) {
                 lb -= 1;
             }
 
