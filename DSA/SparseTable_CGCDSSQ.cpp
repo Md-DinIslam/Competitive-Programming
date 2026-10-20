@@ -22,6 +22,7 @@ ll getGCD(ll a, ll b) {
 
 template<class T> struct RMQ {
     vector<vector<T>> sp;
+    RMQ () {}
     RMQ(const vector<T>& v) : sp(1, v) {
         int n = v.size();
         for (int i = 1, p = 1; 2 * p <= n; p *= 2, ++i) {
