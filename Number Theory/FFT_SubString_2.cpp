@@ -85,9 +85,6 @@ vector<ll> mulFFT (vector<T> &a, vector<T> &b) {
     return ans;
 }
 
-const int mxN = 1e6 + 9;
-vector<int> cnt(mxN, 0);
-
 void Din() {
     string s, t;
     cin >> s >> t;
