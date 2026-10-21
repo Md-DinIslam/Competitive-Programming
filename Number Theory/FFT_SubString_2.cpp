@@ -67,11 +67,9 @@ vector<ll> mulFFT (vector<T> &a, vector<T> &b) {
     int nm = sz(a) + sz(b) - 1, n = 1;
     while (n < nm) n *= 2;
     vector<Cx> x(n), y(n);
-    for (int i = 0; i < sz(a); ++i) {
-        x[i].a = a[i];
-    }
-    for (int i = 0; i < sz(b); ++i) {
-        y[i].a = b[i];
+    for (int i = 0; i < n; ++i) {
+        if (i < sz(a)) x[i].a = a[i];
+        if (i < sz(b)) y[i].a = b[i];
     }
     FFT(x), FFT(y);
     for (int i = 0; i < n; ++i) {
