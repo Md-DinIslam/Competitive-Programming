@@ -104,13 +104,6 @@ struct suffixArray {
 
         rmq = new RMQ<int>(new_temp);
     }
-
-    int getLCP(int i) {return lcp[i];}
-    int getLCP(int i, int j) {
-        i = rank[i], j = rank[j];
-        if (i > j) swap(i, j);
-        return rmq->qry(i, j);
-    }
     
     arr<int, 2> getLCS() {
         int best = 0, pos = -1;
