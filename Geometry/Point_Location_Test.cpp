@@ -38,15 +38,12 @@ struct P {
     bool operator<(P o) const {return tie(x, y) < tie(o.x, o.y); }
     bool operator==(P o) const {return tie(x, y) == tie(o.x, o.y); }
 };
+ 
 istream& operator>>(istream &i, P &p) {
     return i >> p.x >> p.y;
 }
 ostream& operator<<(ostream &o, P p) {
     return o << p.x << " " << p.y;
-}
- 
-bool onSeg (P a, P b, P p) {
-    return a.cross(b, p) == 0 && min(a.x, b.x) <= p.x && p.x <= max(a.x, b.x) && min(a.y, b.y) <= p.y && p.y <= max(a.y, b.y);
 }
  
 void Din() {
