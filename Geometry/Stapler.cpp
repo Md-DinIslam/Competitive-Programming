@@ -1,134 +1,112 @@
 /*
     author: Din_ED
-    Time: 23:39:58
-    Date: 27-09-2025
+    Time: 06:34:23
+    Date: 18-11-2026
 */
 
 #include <bits/stdc++.h>
+#include <cassert>
 using namespace std;
 
 #ifdef LOCAL
 #include "debug.h"
 #else
-#define dg(x...)
+#define dbg(x...)
 #endif
 
 #define ll long long
+#define ld double
 #define all(x) x.begin(), x.end()
 #define pb push_back
 #define sz(x) int(x.size())
 #define arr array
 
-struct Point {
+template<class T> int sgn(T v) {
+    return (v > 0) - (v < 0);
+}
+
+struct P {
     ll x, y;
-    void read() {
-        cin >> x >> y;
+    P operator+(P o) const {return {x+o.x, y+o.y};}
+    P operator-(P o) const {return {x-o.x, y-o.y};}
+    P operator*(ll k) const {return {x*k, y*k};}
+    ll dot(P o) const { return x*o.x + y*o.y; }
+    ll cross(P o) const {return x*o.y-y*o.x;}
+    ll cross(P b, P c) const {
+        return (b-*this).cross(c-*this);
     }
-
-    void set(int x, int y) {
-        this->x = x;
-        this->y = y;
-    }
-
-    Point operator -(const Point &p) const {
-        return Point{x - p.x, y - p.y};
-    }
-
-    void operator -=(const Point &p) {
-        x -= p.x;
-        y -= p.y;
-    }
-
-    ll operator *(const Point &p) const {
-        return x * p.y - y * p.x;
-    }
-
-    ll crossProduct(const Point &b, const Point &c) const {
-        // *this = p1,p1 to b and p1 to c cross product
-        return (b - *this) * (c - *this);
-    }
-    // Check P1 is inside between a and b or not...
-    bool isInside (const Point &a, const Point &b) const {
-        return (a.x <= x && x <= b.x && a.y <= y && y <= b.y);
-    }
-    // friend istream& operator>>(istream &is, Point &p) {
-    //     return is >> p.x >> p.y;
-    // }
-
-    friend ostream& operator<<(ostream &os, const Point &p) {
-        os << p.x << " " << p.y;
-        return os;
-    }
+    ll n2() const {return x*x + y*y;}
+    ld abs() const {return sqrtl(n2());}
+    bool operator<(P o) const {return tie(x, y) < tie(o.x, o.y); }
+    bool operator==(P o) const {return tie(x, y) == tie(o.x, o.y); }
 };
-
-inline int getOrientation(ll x) {
-    return ((x > 0) - (x < 0));
+istream& operator>>(istream &i, P &p) {
+    return i >> p.x >> p.y;
+}
+ostream& operator<<(ostream &o, P p) {
+    return o << p.x << " " << p.y;
 }
 
-bool isInstersect(Point p1, Point p2, Point p3, Point p4) {
-    // First check Co-linear..
-    if ((p2 - p1) * (p4 - p3) == 0) {
-        if (p1.crossProduct(p2, p3)) {
-            return 0; // No Intersection..
-        }
-        // Check Box-Overlapping..
-        for (int rep = 0; rep < 2; ++rep) {
-            if ((max(p1.x, p2.x) < min(p3.x, p4.x)) || (max(p1.y, p2.y) < min(p3.y, p4.y))) {
-                return 0; // No Intersection..
-            }
-            swap(p1, p3);
-            swap(p2, p4);
-        }
-        return 1;
-    }
-
-    // now check side using sign..
-    for (int rep = 0; rep < 2; ++rep) {
-        int sign = getOrientation(p1.crossProduct(p2, p3));
-        int sign2 = getOrientation(p1.crossProduct(p2, p4));
-
-        if ((sign > 0 && sign2 > 0) || (sign < 0 && sign2 < 0)) {
-            return 0; // No Intersection..
-        }
-
-        swap(p1, p3);
-        swap(p2, p4);
-    }
-    return 1; // Intersection..
+bool onSeg (P a, P b, P p) {
+    return a.cross(b, p) == 0 && min(a.x, b.x) <= p.x && p.x <= max(a.x, b.x) && min(a.y, b.y) <= p.y && p.y <= max(a.y, b.y);
 }
+
+bool segInter(P a, P b, P c, P d) {
+    int d1 = sgn(a.cross(b, c)), d2 = sgn(a.cross(b, d));
+    int d3 = sgn(c.cross(d, a)), d4 = sgn(c.cross(d, b));
+    if (d1 * d2 < 0 && d3 * d4 < 0) return 1; // proper
+    return onSeg(a, b, c) || onSeg(a, b, d) || onSeg(c, d, a) || onSeg(c, d, b); // touch/overlap
+}
+
+// 0 = outside, 1 = on boundary, 2 = inside (any simple polygon)
+int inPoly(const vector<P> &p, P q) {
+    int n = sz(p);
+    bool in = 0;
+    for (int i = 0; i < n; ++i) {
+        int j = (i + 1) % n;
+        P a = p[i], b = p[j];
+        if (onSeg(a, b, q)) return 1;
+        if ((a.y > q.y) != (b.y > q.y)) {
+            ll c = a.cross(b, q);
+            if (b.y > a.y ? c > 0 : c < 0) in = !in;
+        }
+    }
+    return in ? 2 : 0;
+}
+
 
 void Din() {
-    vector<Point> p(4);
-    for (auto &x : p) {
-        x.read();
-    }
+    P p1, p2, p3, p4;
+    cin >> p1 >> p4;
 
-    // Check if stapler points inside rectangle or not...
-    if (p[2].isInside(p[0], p[1]) || p[3].isInside(p[0], p[1])) {
+    p2 = {p4.x, p1.y};
+    p3 = {p1.x, p4.y};
+
+    vector<P> pts = {p1, p2, p4, p3};
+
+    P a, b;
+    cin >> a >> b;
+
+    int ans = inPoly(pts, a);
+    if (ans != 0) {
+        cout << "STOP\n";
+        return;
+    }
+    ans = inPoly(pts, b);
+    if (ans != 0) {
         cout << "STOP\n";
         return;
     }
 
-
-    // Four corner...
-    Point p1, p2, p3, p4;
-
-    p1.set(p[1].x, p[0].y);
-    p2.set(p[1].x, p[1].y);
-    p3.set(p[0].x, p[1].y);
-    p4.set(p[0].x, p[0].y);
-
-    Point a, b; // target segment..
-    a.set(p[2].x, p[2].y);
-    b.set(p[3].x, p[3].y);
-    
-    // Checking point a, b lie between any segment or not...
-    if (isInstersect(a, b, p1, p2) || isInstersect(a, b, p2, p3) || isInstersect(a, b, p3, p4) || isInstersect(a, b, p4, p1)) {
-        cout << "STOP\n";
+    for (int i = 0; i < 4; ++i) {
+        int j = (i+1) % 4;
+        if (segInter(a, b, pts[i], pts[j])) {
+            cout << "STOP\n";
+            return;
+        }
     }
-    else {
-        cout << "OK\n";
-    }
+
+    cout << "OK\n";
 }
 
 int main() {
