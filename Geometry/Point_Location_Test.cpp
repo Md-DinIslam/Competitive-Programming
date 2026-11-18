@@ -1,82 +1,72 @@
 /*
     author: Din_ED
-    Time: 23:39:58
-    Date: 27-09-2025
+    Time: 06:34:23
+    Date: 18-11-2026
 */
-
+ 
 #include <bits/stdc++.h>
+#include <cassert>
 using namespace std;
-
+ 
 #ifdef LOCAL
 #include "debug.h"
 #else
-#define dg(x...)
+#define dbg(x...)
 #endif
-
+ 
 #define ll long long
+#define ld double
 #define all(x) x.begin(), x.end()
 #define pb push_back
 #define sz(x) int(x.size())
 #define arr array
-
-struct Point {
+ 
+template<class T> int sgn(T v) {
+    return (v > 0) - (v < 0);
+}
+ 
+struct P {
     ll x, y;
-    void read() {
-        cin >> x >> y;
+    P operator+(P o) const {return {x+o.x, y+o.y};}
+    P operator-(P o) const {return {x-o.x, y-o.y};}
+    P operator*(ll k) const {return {x*k, y*k};}
+    ll dot(P o) const {return x*o.y+y*o.x;}
+    ll cross(P o) const {return x*o.y-y*o.x;}
+    ll cross(P b, P c) const {
+        return (b-*this).cross(c-*this);
     }
-
-    Point operator -(const Point &p) const {
-        return Point{x - p.x, y - p.y};
-    }
-
-    void operator -=(const Point &p) {
-        x -= p.x;
-        y -= p.y;
-    }
-
-    ll operator *(const Point &p) const {
-        return x * p.y - y * p.x;
-    }
-
-    // friend istream& operator>>(istream &is, Point &p) {
-    //     return is >> p.x >> p.y;
-    // }
-
-    // friend ostream& operator<<(ostream &os, const Point &p) {
-    //     os << p.x << " " << p.y;
-    //     return os;
-    // }
+    bool operator<(P o) const {return tie(x, y) < tie(o.x, o.y); }
+    bool operator==(P o) const {return tie(x, y) == tie(o.x, o.y); }
 };
-
+istream& operator>>(istream &i, P &p) {
+    return i >> p.x >> p.y;
+}
+ostream& operator<<(ostream &o, P p) {
+    return o << p.x << " " << p.y;
+}
+ 
+bool onSeg (P a, P b, P p) {
+    return a.cross(b, p) == 0 && min(a.x, b.x) <= p.x && p.x <= max(a.x, b.x) && min(a.y, b.y) <= p.y && p.y <= max(a.y, b.y);
+}
+ 
 void Din() {
-    Point p, p2, p3;
-    // vector<Point> p(3);
-    // for (auto &x : p) {
-    //     x.read();
-    // }
-    p.read();
-    p2.read();
-    p3.read();
-
-    p2 -= p; // A vector, p2 - p
-    p3 -= p; // B vector, p3 - p,
-
-    // then A * B [cross product]
-
-    ll cross_product = p2 * p3; // in vector direction matter, p2 * p3
-
-    if (cross_product < 0) {
-        // P3 is left from P2 point, so right from P1
+    P a, b, p;
+    cin >> a >> b >> p;
+    
+    ll c = a.cross(b, p);
+    c = sgn(c);
+ 
+    if (c < 0) {
         cout << "RIGHT\n";
     }
-    else if (cross_product > 0) {
-        cout << "LEFT\n";
-    }
-    else {
+    else if (c == 0) {
         cout << "TOUCH\n";
     }
+    else {
+        cout << "LEFT\n";
+    }
 }
-
+ 
 int main() {
     ios_base::sync_with_stdio(0); cin.tie(0);
     int t = 1;
